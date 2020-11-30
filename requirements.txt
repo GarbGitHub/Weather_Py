@@ -1,0 +1,15 @@
+pyowm~=3.1.1
+future~=0.18.2
+pip~=20.2.4
+geojson~=2.5.0
+requests~=2.25.0
+certifi~=2020.11.8
+chardet~=3.0.4
+urllib3~=1.26.2
+altgraph~=0.17
+idna~=2.10
+pefile~=2019.4.18
+setuptools~=50.3.2
+pyinstaller~=4.1
+bs4~=0.0.1
+beautifulsoup4~=4.9.3

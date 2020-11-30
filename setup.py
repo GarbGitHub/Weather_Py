@@ -22,4 +22,4 @@ setup(name="Weather",
 
 # pip install cx_freeze
 # cd /f/ProjectPy/Weather_app
-# /f/Python/python.exe setup.py build
+# python.exe setup.py build

@@ -13,9 +13,7 @@ city = sett_city()
 
 config_dict = get_default_config()
 config_dict['language'] = 'ru'
-owm = pyowm.OWM(key_owm)  # File key_owm.py: key_owm = '19b11***************1c82495'
-# Create New Account OWM https://home.openweathermap.org/users/sign_up
-
+owm = pyowm.OWM(key_owm)  # You need to rename !_key_owm.py to key_owm.py
 day = date.today().weekday()
 week = {'0': 'понедельник', '1': 'вторник', '2': 'среда', '3': 'четверг', '4': 'пятница', '5': 'суббота',
         '6': 'воскресение'}
@@ -38,9 +36,9 @@ def win_city():
     page_city.resizable(width=False, height=False)
     page_city.geometry('250x200-40+40')
     page_city.title('Город')
-    # page_city.wm_attributes('-alpha', 0.9)
     page_city['bg'] = '#ffffff'
     page_city.iconphoto(False, PhotoImage(file='app_icon.png'))
+
     # Поле ввода
     city_page_field = Entry(
         page_city,
@@ -54,7 +52,7 @@ def win_city():
     )
     city_page_field.insert(0, city.title())
 
-    # Кнопка
+    # Кнопка Сохранить
     city_page_button = Button(
         page_city,
         command=lambda: ed_city(city_page_field.get()),
@@ -79,7 +77,6 @@ def win_app_version():
     page_version.resizable(width=False, height=False)
     page_version.geometry('250x200-40+40')
     page_version.title('О программе')
-    # page_version.wm_attributes('-alpha', 0.9)
     page_version['bg'] = '#ffffff'
     page_version.iconphoto(False, PhotoImage(file='app_icon.png'))
 
@@ -92,10 +89,13 @@ def win_app_version():
     )
     txt_version.pack(side=TOP, pady=4)
 
-    def callback(event_go_site):
-        webbrowser.open_new(r"https://www.garb.ru/mob-app/weather-cities-world/")
+    def callback(a: str = ''):
+        webbrowser.open_new(f"https://www.garb.ru/download/weather_app/weather_{a}.zip")
+        webbrowser.open_new(f"https://www.garb.ru/mob-app/weather-cities-world/")
 
     def go_def_version():
+        """Проверка обновлений приложения на сайте разработчика"""
+
         btn_up_version.pack_forget()
         global version
         version_app = version
@@ -108,7 +108,8 @@ def win_app_version():
             result_search_version['text'] = f'Найдена новая версия \n {new_version_app}'
             link_www = Label(page_version, text="Скачать с сайта программы", fg="blue", bg="#FFFFFF", cursor="hand2")
             link_www.pack()
-            link_www.bind("<Button-1>", callback)
+            link_www.bind("<Button-1>", lambda event: callback(new_version_app))
+
         return version_app
 
     btn_up_version = Button(

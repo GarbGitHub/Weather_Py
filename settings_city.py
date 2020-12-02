@@ -1,25 +1,6 @@
 import bs4 as bs4
 import requests
-import os.path
-
-
-def sett_city():
-    """Получаем город из файла settings.txt, если его нет - создается файл"""
-
-    print('set_city')
-    if os.path.isfile('settings.txt'):
-        with open('settings.txt', 'r', encoding='utf-8') as set_file:
-            city = set_file.readline()
-            if city == '':
-                city = yandex_internet()
-                with open('settings.txt', 'w', encoding='utf-8') as set_file:
-                    set_file.write(city)
-            return city
-    else:
-        with open('settings.txt', 'w', encoding='utf-8') as set_file:
-            city = yandex_internet()
-            set_file.write(city)
-        return city
+import sqlite3
 
 
 def yandex_internet():
@@ -31,8 +12,40 @@ def yandex_internet():
     return city
 
 
-def ed_city(new_city):
-    """Пользователь вносит город по умолчанию в settings.txt"""
+def sett_city():
+    db = sqlite3.connect('server.db')
+    sql = db.cursor()
 
-    with open('settings.txt', 'w', encoding='utf-8') as new_file:
-        new_file.write(new_city)
+    # Если таблицы нет - создаем ее
+    sql.execute("""CREATE TABLE IF NOT EXISTS cities (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `city` TEXT)""")
+    db.commit()
+
+    # Если таблица пустая - делаем первую запись, город узнаем у Яндекса
+    sql.execute('SELECT city FROM cities')
+    if sql.fetchone() is None:
+        city = yandex_internet()
+        sql.execute(f"INSERT INTO cities (city) VALUES('{city}')")
+        db.commit()
+        db.close()
+        return city
+
+    # Если в таблице есть город, работаем с ним
+    else:
+        sql.execute(f"SELECT city FROM cities WHERE id = {1}")
+        city = sql.fetchone()[0]
+        db.close()
+        return city
+
+
+def ed_city(new_city):
+    """Пользователь сохраняет в БД свой город"""
+
+    db = sqlite3.connect('server.db')
+    sql = db.cursor()
+    if new_city == '':  # Если пользователь не ввел город
+        new_city = yandex_internet()  # Берем город у Яндекса
+    sql.execute(f"UPDATE cities SET city = '{new_city}' WHERE id = {1}")
+    db.commit()
+    db.close()

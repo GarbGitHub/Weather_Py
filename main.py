@@ -8,8 +8,8 @@ from tkinter import *
 from settings_city import sett_city, ed_city
 from key_owm import key_owm
 
-version = '0.0.1'
 city = sett_city()
+version = '0.0.2'
 
 config_dict = get_default_config()
 config_dict['language'] = 'ru'
@@ -101,7 +101,7 @@ def win_app_version():
         version_app = version
         s_host = requests.get('https://www.garb.ru/mob-app/weather-cities-world/')
         ds = bs4.BeautifulSoup(s_host.text, "html.parser")
-        new_version_app = ds.select(" .version_app .current_version")[0].getText()
+        new_version_app = ds.find_all('a', class_='active')[0].getText()
         if version_app == new_version_app:
             result_search_version['text'] = 'Обновлений не найдено'
         else:

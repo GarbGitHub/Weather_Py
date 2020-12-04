@@ -4,7 +4,7 @@ import sqlite3
 
 
 def yandex_internet():
-    """Определяется текущий город с помощью Яндекс Интернетометра https://yandex.ru/internet/"""
+    """Определяется текущий город с помощью Яндекс Интернетометра"""
 
     s_host = requests.get('https://yandex.ru/internet/')
     ds = bs4.BeautifulSoup(s_host.text, "html.parser")
@@ -26,14 +26,14 @@ def sett_city():
     sql.execute('SELECT city FROM cities')
     if sql.fetchone() is None:
         city = yandex_internet()
-        sql.execute(f"INSERT INTO cities (city) VALUES('{city}')")
+        sql.execute(f"INSERT INTO cities (city) VALUES(?)", city.split())
         db.commit()
         db.close()
         return city
 
     # Если в таблице есть город, работаем с ним
     else:
-        sql.execute(f"SELECT city FROM cities WHERE id = {1}")
+        sql.execute(f"SELECT city FROM cities WHERE id = (?)", [1])
         city = sql.fetchone()[0]
         db.close()
         return city
@@ -46,6 +46,6 @@ def ed_city(new_city):
     sql = db.cursor()
     if new_city == '':  # Если пользователь не ввел город
         new_city = yandex_internet()  # Берем город у Яндекса
-    sql.execute(f"UPDATE cities SET city = '{new_city}' WHERE id = {1}")
+    sql.execute(f"UPDATE cities SET city = (?) WHERE id = (?)", [new_city, 1])
     db.commit()
     db.close()

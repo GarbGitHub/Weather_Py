@@ -1,9 +1,9 @@
 altgraph==0.17
 beautifulsoup4==4.9.3
 bs4==0.0.1
-certifi==2020.11.8
+certifi==2020.12.5
 chardet==3.0.4
-cx-Freeze==6.4.1
+cx-Freeze==6.4.2
 future==0.18.2
 geojson==2.5.0
 idna==2.10
